@@ -14,15 +14,8 @@ library(data.table)
 #* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 #set this according to the files you have
 dirVars <- c("C:/metro_data/Run/", "Rain", "20", "/")
-locVars <- c("1311","1316","1408","1409", "1421", "1320", "1412", "0814", "0902", "0601")
-locNames <- c("Dharan_Bazar", "Sunsari", "Damak", "Anarmani_Birta", "Gaida_Kankai", "Tarahara", "Chandra_Gadhi", "Lumle", "Rampur", "Jomsom")
-filesCreated <- c("")
-monsoon <- c("")
-monsoon1 <- c("")
-goodRain <- c("")
-excessRain <- c("")
-drySpell <- c("")
-annualRain <- c("")
+locVars <- c("1311","1316","1408")
+locNames <- c("Dharan_Bazar", "Sunsari", "Damak")
 for (i in 1:length(locVars)) {
   dirTemp <- paste(dirVars[1], dirVars[2],locVars[i],dirVars[3],dirVars[4], sep="")
   locTemp <- locNames[i]
