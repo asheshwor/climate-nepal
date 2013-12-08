@@ -13,3 +13,5 @@ The first line of each of the files for temperature data consists of the corresp
 Station name and code
 ----------
 List of meteorological stations in Nepal can be found at http://www.dhm.gov.np/meteorological-station
+
+See https://github.com/asheshwor/R-maps/blob/master/01_simple-map.R for R code to plot meterological stations of Nepal.
