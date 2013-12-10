@@ -1,15 +1,15 @@
-Climate Nepal
+Reading and tabulting Nepali climatic data in R
 ===============
 
-This is a collection of R code to process raw (ASCII) format data on climactic variables obtained from Department of Hydrology and Meteorology (DHM), Babarmahal, Nepal. The read data is then stored as csv files for further processing.
+This is a collection of R code to process raw (ASCII) format data on climactic variables obtained from Department of Hydrology and Meteorology (DHM), Babarmahal, Kathmandu, Nepal. The read data can be stored as csv or xlsx files for storing and further processing.
 
-No sample data is presented here as the data can only be obtained from DHM for a secific purpose upon written request and payment. The format for rainfall and temperature data is presented in the sections below.
+No sample data is presented here as the data can only be obtained from DHM for upon written request and payment. The format for rainfall and temperature data is presented in the sections below.
 
 Rainfall data
 ----------
 For rainfall data, each file in the dataset consists of one year of rainfall records with each line represented by day of year (DOY) and rainfall for the corresponding DOY in millimeters (mm). The DOY ranges from 1 to 365 during non-leap years and from 1 to 366 in leap years. Missing data is denoted by string 'DNA' and 'trace amount of rainfall' is marked by string 'T'.
 
-***Format for rainfall data
+Format for rainfall data:
 
 ```
       1    3.0
@@ -28,6 +28,8 @@ For rainfall data, each file in the dataset consists of one year of rainfall rec
 Temperature data
 ----------
 The first line of each of the files for temperature data consists of the corresponding 4 digit year number and name of the station. The second line consists of column headings for maximum and minimum temperatures. From the third line onwards, each text file in the dataset consists of one year of temperature records with each line represented by DOY, maximum temperature and minimum temperature for the corresponding DOY in Celsius (°C). The DOY ranges from 1 to 365 during non-leap years and from 1 to 366 in leap years.
+
+Format for temperature data:
 
 ```
 1985          Temperature for <STATION NAME>                
