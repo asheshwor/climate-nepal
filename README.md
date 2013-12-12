@@ -3,7 +3,7 @@ Reading and tabulating Nepali climatic data in R
 
 This is a collection of R code to process raw (ASCII) format data on climatic variables obtained from Department of Hydrology and Meteorology (DHM), Babarmahal, Kathmandu, Nepal. The read data can be stored as csv or xlsx files for storing and further processing.
 
-No sample data is presented here as the data can only be obtained from DHM for upon written request and payment. The format for rainfall and temperature data is presented in the sections below.
+No sample data is presented here as the data can only be obtained from DHM for upon written request and payment. The format for rainfall and temperature data is presented in the sections below. In both cases, each record is tied to a date and is stored as one continious time-series data.
 
 Rainfall data
 ----------
