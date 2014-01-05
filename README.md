@@ -79,16 +79,16 @@ List of meteorological stations in Nepal can be found at http://www.dhm.gov.np/m
 
 See https://github.com/asheshwor/R-maps/blob/master/01_simple-map.R for R code to plot meterological stations of Nepal.
 
-Counting NAs from temperature data
+Counting NAs in temperature records
 ----------
 One of the first we do once we get daily records is to check for days with no records. While there are many ways to count NA values in R, here's an example using ```ddply``` function from ```plyr``` package.
 
 ```
 require(plyr)
 temprec <- read.csv("Dharan_Bazar_temp1.csv", stringsAsFactors = FALSE)
-temprecna <- ddply(temprec, c("Year"), function(df) c(sum(is.na(df$Max)), sum(is.na(df$Min)), 
-                                         sum(is.na(df$Mean))))
-names(temprecna) <- c("Year","MaxNA", "MinNA", "MeanNA")
+temprecna <- ddply(temprec, c("Year"), function(df) c(MaxNA = sum(is.na(df$Max)),
+                                                      MinNA = sum(is.na(df$Min)),
+                                                      MeaNA = sum(is.na(df$Mean))))
 head(temprecna)
 ```
 Which results in the summary of NA values as a dataframe.
@@ -101,10 +101,29 @@ Which results in the summary of NA values as a dataframe.
 4  2003     0     0      0
 5  2004     0     0      0
 6  2005     0     0      0
-7  2006     0     0      0
-8  2007     0     0      0
-9  2008     0     0      0
-10 2009     0     0      0
-11 2010     0     0      0
-12 2011     0     0      0
+```
+
+Counting NAs and Ts in rainfall records
+----------
+For most analysis, the days with trace amount of rainfall is replaced with 0. Before replacing, it may be a good idea to count the number of NAs and Ts. Here's the code to do just that for each year again using ```ddply``` function from ```plyr``` package.
+
+```
+rainrec <- read.csv(paste0("x:/DHM_data/Rain/", c("Dharan_Bazar.csv")), stringsAsFactors = FALSE)
+names(rainrec) <- c("Date", "Rainfall", "DOY")
+rainrec$Year <- strftime(as.Date(rainrec$Date), format='%Y') #add year column
+rainrecna <- ddply(rainrec, c("Year"), function(df) c(RainfallNA = sum(is.na(df$Rainfall)),
+                                                      Tcount = sum(sapply(df$Rainfall, function(x) x=="T"))))
+head(rainrecna)
+```
+
+Which results in the summary of NA count and T count values as a dataframe.
+
+```
+   Year RainfallNA Tcount
+1  2000          0      6
+2  2001          0      9
+3  2002          0      5
+4  2003          0     11
+5  2004          0     10
+6  2005          0      1
 ```
