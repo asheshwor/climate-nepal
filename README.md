@@ -78,3 +78,33 @@ Station name and code
 List of meteorological stations in Nepal can be found at http://www.dhm.gov.np/meteorological-station
 
 See https://github.com/asheshwor/R-maps/blob/master/01_simple-map.R for R code to plot meterological stations of Nepal.
+
+Counting NAs from temperature data
+----------
+One of the first we do once we get daily records is to check for days with no records. While there are many ways to count NA values in R, here's an example using ```ddply``` function from ```plyr``` package.
+
+```
+require(plyr)
+temprec <- read.csv("Dharan_Bazar_temp1.csv", stringsAsFactors = FALSE)
+temprecna <- ddply(temprec, c("Year"), function(df) c(sum(is.na(df$Max)), sum(is.na(df$Min)), 
+                                         sum(is.na(df$Mean))))
+names(temprecna) <- c("Year","MaxNA", "MinNA", "MeanNA")
+head(temprecna)
+```
+Which results in the summary of NA values as a dataframe.
+
+```
+   Year MaxNA MinNA MeanNA
+1  2000     0     0      0
+2  2001     0     0      0
+3  2002     0     1      1
+4  2003     0     0      0
+5  2004     0     0      0
+6  2005     0     0      0
+7  2006     0     0      0
+8  2007     0     0      0
+9  2008     0     0      0
+10 2009     0     0      0
+11 2010     0     0      0
+12 2011     0     0      0
+```
