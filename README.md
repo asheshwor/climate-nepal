@@ -1,9 +1,11 @@
-Reading and tabulating Nepali climatic data in R
+Reading and tabulating Nepali climatic and hydrological records
 ===============
 
-This is a collection of R code to process raw (ASCII) format data on climatic variables obtained from Department of Hydrology and Meteorology (DHM), Babarmahal, Kathmandu, Nepal. The read data can be stored as csv or xlsx files for storing and further processing.
+This is a collection of R code to process raw (ASCII) format data on climatic variables obtained from Department of Hydrology and Meteorology (DHM), Babarmahal, Kathmandu, Nepal. While the raw data can be opened in any text editor and copied to a spreadsheet, it can be quite a hassel when dealing with decades of data from multiple stations. I find it easy to read and combine the data in R which can be stored as csv or xlsx files for storing and further processing.
 
-No sample data is presented here as the data can only be obtained from DHM for upon written request and payment. The format for rainfall and temperature data is presented in the sections below. In both cases, each record is tied to a date and is stored as one continious time-series data.
+These are the code that I am using for my own research. I will continue to add the code for analysis as my research progresses.
+
+No sample data is presented here as the data can only be obtained from DHM for upon written request and payment. The format for rainfall and temperature data is presented in the sections below. In both cases the yearly records are combined into one continious time-series object.
 
 Rainfall data
 ----------
@@ -86,6 +88,7 @@ One of the first we do once we get daily records is to check for days with no re
 ```
 require(plyr)
 temprec <- read.csv("Dharan_Bazar_temp1.csv", stringsAsFactors = FALSE)
+temprec$Year <- strftime(as.Date(temprec$Date), format='%Y')
 temprecna <- ddply(temprec, c("Year"), function(df) c(MaxNA = sum(is.na(df$Max)),
                                                       MinNA = sum(is.na(df$Min)),
                                                       MeaNA = sum(is.na(df$Mean))))
@@ -112,7 +115,8 @@ rainrec <- read.csv(paste0("x:/DHM_data/Rain/", c("Dharan_Bazar.csv")), stringsA
 names(rainrec) <- c("Date", "Rainfall", "DOY")
 rainrec$Year <- strftime(as.Date(rainrec$Date), format='%Y') #add year column
 rainrecna <- ddply(rainrec, c("Year"), function(df) c(RainfallNA = sum(is.na(df$Rainfall)),
-                                                      Tcount = sum(sapply(df$Rainfall, function(x) x=="T"))))
+                                                      Tcount = sum(sapply(df$Rainfall,
+													  function(x) x=="T"))))
 head(rainrecna)
 ```
 
@@ -126,4 +130,23 @@ Which results in the summary of NA count and T count values as a dataframe.
 4  2003          0     11
 5  2004          0     10
 6  2005          0      1
+```
+
+Creating a time series of rainfall records
+----------
+For seasonal and yearly statistics, the data can be conveted into a time series. Here is an example using the ```zoo``` package.
+
+```
+require(zoo)
+#replace Ts with 0
+rainrec$Rainfall[rainrec$Rainfall == "T"] <- 0
+rainrec$Rainfall <- as.numeric(rainrec$Rainfall)
+rain.zoo <- zoo(rainrec$Rainfall, as.Date(rainrec$Date)) #create zoo object
+rain.monthly <- apply.monthly(rain.zoo, "sum")
+rain.yearly <- apply.yearly(rain.zoo, "sum")
+#plot monthly and annual total rainfall
+par(mfrow=c(1,2))
+plot(rain.monthly, main="Total monthly rainfall in mm")
+plot(rain.yearly, main= "Total annual rainfall in mm")
+par(mfrow=c(1,1))
 ```
