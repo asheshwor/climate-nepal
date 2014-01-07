@@ -1,7 +1,7 @@
 Reading and tabulating Nepali climatic and hydrological records
 ===============
 
-This is a collection of R code to process raw (ASCII) format data on climatic variables obtained from Department of Hydrology and Meteorology (DHM), Babarmahal, Kathmandu, Nepal. While the raw data can be opened in any text editor and copied to a spreadsheet, it can be quite a hassel when dealing with decades of data from multiple stations. I find it easy to read and combine the data in R which can be stored as csv or xlsx files for storing and further processing.
+This is a collection of ```R``` code to process raw (ASCII) format data on climatic variables obtained from Department of Hydrology and Meteorology (DHM), Babarmahal, Kathmandu, Nepal. While the raw data can be opened in any text editor and copied to a spreadsheet, it can be quite a hassel when dealing with decades of data from multiple stations. I find it easy to read and combine the data in R which can be stored as csv or xlsx files for storing and further processing.
 
 These are the code that I am using for my own research. I will continue to add the code for analysis as my research progresses.
 
@@ -150,3 +150,34 @@ plot(rain.monthly, main="Total monthly rainfall in mm")
 plot(rain.yearly, main= "Total annual rainfall in mm")
 par(mfrow=c(1,1))
 ```
+
+Computing seasonal rainfall statistics
+----------
+The following code uses ```ddply``` to aggregate seasonal statistics. 
+
+```
+rainrec$Month <- as.numeric(strftime(as.Date(rainrec$Date), format='%m'))
+rainrec$Season <- factor(rainrec$Season, levels=c(1:4),
+                         labels=c("Pre-monsoon", "Monsoon",
+                                  "Post-monsoon", "Winter"))
+seasonal <- ddply(rainrec, c("Year", "Season"),
+                  function(df) c(Total = sum(df$Rainfall)))
+#the following takes man annual rainfall from earlier calculation 
+# 	to calculate perecntage of seasonal means
+meanseasonal <- ddply(seasonal, c("Season"),
+                      function(df) c(SMean = mean(df$Total),
+                                     SPercent = (mean(df$Total) /
+                                                   mean(rain.yearly)) * 100))
+```
+
+The ```meanseasonal``` dataframe summarises the mean toal seasonal rainfall calculated from all the records.
+
+```
+        Season     SMean  SPercent
+1  Pre-monsoon  304.6667 13.952974
+2      Monsoon 1688.6583 77.336341
+3 Post-monsoon  149.9250  6.866191
+4       Winter   40.2750  1.844495
+```
+
+
