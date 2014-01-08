@@ -180,4 +180,36 @@ The ```meanseasonal``` dataframe summarises the mean toal seasonal rainfall calc
 4       Winter   40.2750  1.844495
 ```
 
+Computing monsoon onset day for each year
+----------
+Again with the help of ```ddply``` the monsoon onset date for each year is computed in this example. The definition of monsoon onset is taken as any rainy day after June 1 with total rainfall of three consecutinve days exceeding 30mm. A day is counted as a rainy day if there is a rainfall of at least 0.85 mm. There are other similar criteria for calculating mosoon onset which can be done with little modification to the following code.
+
+```
+rainrec.mon <- rainrec[rainrec$Season == "Monsoon",] #isolate only monsoon days
+monsoonOnset <- function(xdf) {
+  reclen <- length(xdf$Rainfall) -2
+  for (i in 1:reclen) {
+    if ((xdf$Rainfall[i] >= 0.85) &
+          (sum(xdf$Rainfall[i],
+               xdf$Rainfall[i+1],
+               xdf$Rainfall[i+2], na.rm=TRUE) > 30))
+      return(xdf$DOY[i])
+  }
+}
+monsoon <- ddply(rainrec.mon, c("Year"), monsoonOnset)
+```
+
+This returns a dataframe with year and their corrosponding monsoon onset days in DOY. An example with first 6 rows is given below.
+
+```
+   Year  V1
+1  2000 153
+2  2001 153
+3  2002 153
+4  2003 156
+5  2004 160
+6  2005 160
+```
+
+
 
