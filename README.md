@@ -211,5 +211,56 @@ This returns a dataframe with year and their corrosponding monsoon onset days in
 6  2005 160
 ```
 
+Computing dry spell days
+----------
+For this analysis, a dry spell is defined as at least 7 consecutive days of no rainfall after commencement of monsoon in the 30 days after monsoon commencement [1, pp 4]. A no rainfall day is defined as a day with less than 0.85 mm of rain. The following function first calculates monsoon onset day and checks the next 30 days for occurance of dry spells using ```rle``` function. The function outputs a dataframe which is parsed by ```ddply``` into columns.
+
+```
+is.rain <- function(x) x >= 0.85 #only days with >= 0.85mm of rain
+drySpell2 <- function(xdf) {
+  #first get monsoon onset
+  monindex <- 0
+  reclen <- length(xdf$Rainfall) - 2
+  for (i in 1:reclen) {
+    if ((xdf$Rainfall[i] >= 0.85) &
+          (sum(xdf$Rainfall[i],
+               xdf$Rainfall[i+1],
+               xdf$Rainfall[i+2], na.rm=TRUE) > 30))
+      {monindex <- i; break}
+  }
+  monindex <- monindex + 1 #we only need to check from the day after monsoon onset
+  reclen2 <- length(xdf$Rainfall)
+  rainlist.F.count <- 0; rainlist.F.len <- 0
+  #rle to get dry spell date
+  rle.rain <- rle(sapply(xdf$Rainfall[monindex:(monindex+30)], is.rain)) #check next 30 days
+  rainlist.F <- rle.rain$lengths[!rle.rain$values]
+  #total number of dry spells
+  rainlist.F.count <- sum(sapply(rainlist.F, function(x) x >= 7))
+  #total days of dry spell
+  rainlist.F.len <- 0
+  if (rainlist.F.count >= 1) 
+     { rainlist.F.len <- sum(sapply(rainlist.F[rainlist.F >= 7], sum)) }
+  return(data.frame(drycount = rainlist.F.count, drylength = rainlist.F.len))
+}
+drydate <- ddply(rainrec.mon, c("Year"), drySpell2)
+```
+
+The output dataframe ```drydate``` lists the number of dry days and the total length of dry spell in days.
+
+```
+   Year 	drycount drylength
+1  2000           0         0
+2  2001           0         0
+3  2002           0         0
+4  2003           0         0
+5  2004           1         7
+6  2005           0         0
+7  2006           0         0
+```
+
+References
+-----------
+
+1. Karmacharya, J 2010, Exploring daily rainfall data to investigate evidence of climate change in Kathmandu Valley and its implication in rice farming in the area, Ministry of Agriculture, Kathmandu, Nepal.
 
 
