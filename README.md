@@ -108,12 +108,13 @@ Which results in the summary of NA values as a dataframe.
 
 Counting NAs and Ts in rainfall records
 ----------
+
 For most analysis, the days with trace amount of rainfall is replaced with 0. Before replacing, it may be a good idea to count the number of NAs and Ts. Here's the code to do just that for each year again using ```ddply``` function from ```plyr``` package.
 
 ```
 rainrec <- read.csv(paste0("x:/DHM_data/Rain/", c("Dharan_Bazar.csv")), stringsAsFactors = FALSE)
 names(rainrec) <- c("Date", "Rainfall", "DOY")
-rainrec$Year <- strftime(as.Date(rainrec$Date), format='%Y') #add year column
+rainrec$Year <- strftime(as.Date(rainrec$Date, "%Y-%m-%d"), format='%Y') #add year column
 rainrecna <- ddply(rainrec, c("Year"), function(df) c(RainfallNA = sum(is.na(df$Rainfall)),
                                                       Tcount = sum(sapply(df$Rainfall,
 													  function(x) x=="T"))))
@@ -161,13 +162,13 @@ rainrec$Season <- factor(rainrec$Season, levels=c(1:4),
                          labels=c("Pre-monsoon", "Monsoon",
                                   "Post-monsoon", "Winter"))
 seasonal <- ddply(rainrec, c("Year", "Season"),
-                  function(df) c(Total = sum(df$Rainfall)))
+                  function(df) c(Total = sum(df$Rainfall, na.rm=TRUE)))
 #the following takes man annual rainfall from earlier calculation 
-# 	to calculate perecntage of seasonal means
+#   to calculate perecntage of seasonal means
 meanseasonal <- ddply(seasonal, c("Season"),
-                      function(df) c(SMean = mean(df$Total),
-                                     SPercent = (mean(df$Total) /
-                                                   mean(rain.yearly)) * 100))
+                      function(df) c(SMean = mean(df$Total, na.rm=TRUE),
+                                     SPercent = (mean(df$Total, na.rm=TRUE) /
+                                                   mean(rain.yearly, na.rm=TRUE)) * 100))
 ```
 
 The ```meanseasonal``` dataframe summarises the mean toal seasonal rainfall calculated from all the records.
@@ -186,6 +187,8 @@ Again with the help of ```ddply``` the monsoon onset date for each year is compu
 
 ```
 rainrec.mon <- rainrec[rainrec$Season == "Monsoon",] #isolate only monsoon days
+#replace NAs with 0
+rainrec.mon$Rainfall[is.na(rainrec.mon$Rainfall)] <- 0
 monsoonOnset <- function(xdf) {
   reclen <- length(xdf$Rainfall) -2
   for (i in 1:reclen) {
@@ -231,7 +234,6 @@ drySpell2 <- function(xdf) {
   monindex <- monindex + 1 #we only need to check from the day after monsoon onset
   reclen2 <- length(xdf$Rainfall)
   rainlist.F.count <- 0; rainlist.F.len <- 0
-  #rle to get dry spell date
   rle.rain <- rle(sapply(xdf$Rainfall[monindex:(monindex+30)], is.rain)) #check next 30 days
   rainlist.F <- rle.rain$lengths[!rle.rain$values]
   #total number of dry spells
@@ -256,6 +258,47 @@ The output dataframe ```drydate``` lists the number of dry days and the total le
 5  2004           1         7
 6  2005           0         0
 7  2006           0         0
+```
+
+Alternative code for dry spell days withtout for loop with ```rolapply``` function from ```zoo``` package is given below.
+
+```
+drySpell3 <- function(xdf) {
+  #first get monsoon onset
+  monindex <- min(which(sapply(rollapply(xdf$Rainfall, 3, sum, partial=1), function(x) x>= 30)))
+  if (monindex == Inf) {monindex = NA;
+                        return(data.frame(monsoon1 = NA,
+                                          monsoon1DOY = NA,
+                                          drycount = NA, 
+                                          drylength = NA))}
+  rainlist.F.count <- 0
+  rainlist.F.len <- 0
+  rainlist <- sapply(xdf$Rainfall[(monindex + 1) :(monindex+30)], is.rain)
+  rle.rain <- rle(rainlist)
+  rainlist.F <- rle.rain$lengths[!rle.rain$values]
+  rainlist.F.count <- sum(sapply(rainlist.F, function(x) x >= 7))
+  rainlist.F.len <- 0
+  if (rainlist.F.count >= 1) 
+  { rainlist.F.len <- sum(sapply(rainlist.F[rainlist.F >= 7], sum)) }
+  return(data.frame(monsoon1 = xdf$Date[monindex],
+                    monsoon1DOY = xdf$DOY[monindex],
+                    drycount = rainlist.F.count, 
+                    drylength = rainlist.F.len))
+}
+drydate3 <- ddply(rainrec.mon, c("Year"), drySpell3)
+```
+
+The output dataframe ```drydate3``` lists the monsoon onset date, monsoon onset DOY, number of dry days and the total length of dry spell in days.
+
+```
+   Year   monsoon1 monsoon1DOY drycount drylength
+1  2000 2000-06-02         155        0         0
+2  2001 2001-06-03         154        0         0
+3  2002 2002-06-03         155        0         0
+4  2003 2003-06-06         157        0         0
+5  2004 2004-06-09         161        1         7
+6  2005 2005-06-10         163        0         0
+7  2006 2006-06-11         162        0         0
 ```
 
 References
