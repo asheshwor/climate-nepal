@@ -263,8 +263,11 @@ The output dataframe ```drydate``` lists the number of dry days and the total le
 Alternative code for dry spell days withtout for loop with ```rolapply``` function from ```zoo``` package is given below.
 
 ```
+is.rain <- function(x) x >= 0.85 #only days with >= 0.85mm of rain
 drySpell3 <- function(xdf) {
   #first get monsoon onset
+  monindex <- 0
+  reclen <- length(xdf$Rainfall) - 2
   monindex <- min(which(sapply(rollapply(xdf$Rainfall, 3, sum, partial=1), function(x) x>= 30)))
   if (monindex == Inf) {monindex = NA;
                         return(data.frame(monsoon1 = NA,
@@ -276,8 +279,11 @@ drySpell3 <- function(xdf) {
   rainlist <- sapply(xdf$Rainfall[(monindex + 1) :(monindex+30)], is.rain)
   rle.rain <- rle(rainlist)
   rainlist.F <- rle.rain$lengths[!rle.rain$values]
-  rainlist.F.count <- sum(sapply(rainlist.F, function(x) x >= 7))
-  rainlist.F.len <- 0
+  if (length(rainlist.F) == 0) {return(data.frame(monsoon1 = xdf$Date[monindex],
+                                          monsoon1DOY = xdf$DOY[monindex],
+                                          drycount = 0, 
+                                          drylength = 0))}
+  rainlist.F.count <- sum(sapply(rainlist.F, function(x) x >= 7), na.rm=TRUE)
   if (rainlist.F.count >= 1) 
   { rainlist.F.len <- sum(sapply(rainlist.F[rainlist.F >= 7], sum)) }
   return(data.frame(monsoon1 = xdf$Date[monindex],
@@ -285,6 +291,7 @@ drySpell3 <- function(xdf) {
                     drycount = rainlist.F.count, 
                     drylength = rainlist.F.len))
 }
+
 drydate3 <- ddply(rainrec.mon, c("Year"), drySpell3)
 ```
 
