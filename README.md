@@ -154,7 +154,7 @@ par(mfrow=c(1,1))
 
 Computing seasonal rainfall statistics
 ----------
-The following code uses ```ddply``` to aggregate seasonal statistics. 
+The following code uses ```ddply``` to aggregate seasonal statistics. The year is divided into four seasons with Pre-monsoon for the months of March to May, Monsoon for the months of June to September, Post-monsoon for the months of October - November and Winter for the months of December to February. Although this is the general practice, there are alternative definition of seasons in Nepal (see [4] for example).
 
 ```
 rainrec$Month <- as.numeric(strftime(as.Date(rainrec$Date), format='%m'))
@@ -183,7 +183,7 @@ The ```meanseasonal``` dataframe summarises the mean toal seasonal rainfall calc
 
 Computing monsoon onset day for each year
 ----------
-Again with the help of ```ddply``` the monsoon onset date for each year is computed in this example. The definition of monsoon onset is taken as any rainy day after June 1 with total rainfall of three consecutinve days exceeding 30mm. A day is counted as a rainy day if there is a rainfall of at least 0.85 mm. There are other similar criteria for calculating mosoon onset which can be done with little modification to the following code.
+Again with the help of ```ddply``` the monsoon onset date for each year is computed in this example. Monsoon onset depends on various factors besides rainfall amount [1]. Since we are going to compute monsoononset only from rainfall data, the definition of monsoon onset is taken as any rainy day after June 1 with total rainfall of three consecutinve days exceeding 30mm. See [2] & [3] for detailed explaination. A day is counted as a rainy day if there is a rainfall of at least 0.85 mm. There are other similar criteria for calculating mosoon onset which can be done with little modification to the following code.
 
 ```
 rainrec.mon <- rainrec[rainrec$Season == "Monsoon",] #isolate only monsoon days
@@ -216,7 +216,7 @@ This returns a dataframe with year and their corrosponding monsoon onset days in
 
 Computing dry spell days
 ----------
-For this analysis, a dry spell is defined as at least 7 consecutive days of no rainfall after commencement of monsoon in the 30 days after monsoon commencement [1, pp 4]. A no rainfall day is defined as a day with less than 0.85 mm of rain. The following function first calculates monsoon onset day and checks the next 30 days for occurance of dry spells using ```rle``` function. The function outputs a dataframe which is parsed by ```ddply``` into columns.
+For this analysis, a dry spell is defined as at least 7 consecutive days of no rainfall after commencement of monsoon in the 30 days after monsoon commencement [2, pp 4]. A no rainfall day is defined as a day with less than 0.85 mm of rain. The following function first calculates monsoon onset day and checks the next 30 days for occurance of dry spells using ```rle``` function. The function outputs a dataframe which is parsed by ```ddply``` into columns.
 
 ```
 is.rain <- function(x) x >= 0.85 #only days with >= 0.85mm of rain
@@ -311,6 +311,11 @@ The output dataframe ```drydate3``` lists the monsoon onset date, monsoon onset 
 References
 -----------
 
-1. Karmacharya, J 2010, Exploring daily rainfall data to investigate evidence of climate change in Kathmandu Valley and its implication in rice farming in the area, Ministry of Agriculture, Kathmandu, Nepal.
+1. Devkota, LP 1984, 'Onset of summer monsoon in Nepal', The Himalayan Review, vol. 15, no. 1983-84, pp. 11-20. 
 
+2. Karmacharya, J 2010, Exploring daily rainfall data to investigate evidence of climate change in Kathmandu Valley and its implication in rice farming in the area, Ministry of Agriculture, Kathmandu, Nepal.
+
+3. Upadhyay, S 2010, 'Monsoon variability analysis in Nepal from 1979 to 2008', Department of Environmental Science and Engineering, BSc Thesis thesis, Bachelor of Science (Honors) thesis, Kathmandu University.
+
+4. Nayava, JL 1980, 'Rainfall in Nepal', Himalayan Review, vol. 12, pp. 1-18.
 
