@@ -308,6 +308,22 @@ The output dataframe ```drydate3``` lists the monsoon onset date, monsoon onset 
 7  2006 2006-06-11         162        0         0
 ```
 
+Replacing NA rainfall with proxy values
+----------
+As the spatial interpolation of precipitation data is not recommended for Nepali terrain [5], the missing rainfall is replaced by a proxy based on the value of the day in the previous year and the value for the day in the next year.
+
+```
+#code
+```
+
+Computing rainfall anomalies
+----------
+
+
+```
+#code
+```
+
 References
 -----------
 
@@ -318,4 +334,6 @@ References
 3. Upadhyay, S 2010, 'Monsoon variability analysis in Nepal from 1979 to 2008', Department of Environmental Science and Engineering, BSc Thesis thesis, Bachelor of Science (Honors) thesis, Kathmandu University.
 
 4. Nayava, JL 1980, 'Rainfall in Nepal', Himalayan Review, vol. 12, pp. 1-18.
+
+5. Hormann K 1994, Computer based climatological maps for high mountain areas. International Centre for Integrated Mountain Development, ICIMOD, Kathmandu, Nepal, MEM Ser, 12.
 
