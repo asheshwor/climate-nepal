@@ -310,10 +310,22 @@ The output dataframe ```drydate3``` lists the monsoon onset date, monsoon onset 
 
 Replacing NA rainfall with proxy values
 ----------
-As the spatial interpolation of precipitation data is not recommended for Nepali terrain [5], the missing rainfall is replaced by a proxy based on the value of the day in the previous year and the value for the day in the next year.
+As the spatial interpolation of precipitation data is not recommended for Nepali terrain [5], the missing rainfall is replaced by a proxy based on the value of the day in the previous year and the value for the day in the next year. The following code does not take into account of leap years. In the case when the first year's data is missing, only the value from the next year is used.
+
 
 ```
-#code
+rainproxy <- function(xlist) {
+  nax <- which(is.na(xlist))
+  naxi <- nax + 365 #next year; does not take into a/c of leap year
+  naxo <- nax - 365 #previous year
+  nay <- which(naxo <= 0)
+  naxo[nay] <- naxi[nay] #if missing year is 1st, next year's data is repeated
+  xlist[nax] <- rowMeans(cbind(xlist[naxi], xlist[naxo]))
+  return(xlist)
+}
+
+rainrec <- ddply(rainrec, c("Station"), transform,
+                 Rainfall2 = rainproxy(Rainfall))
 ```
 
 Computing rainfall anomalies
