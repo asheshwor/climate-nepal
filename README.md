@@ -87,7 +87,7 @@ One of the first we do once we get daily records is to check for days with no re
 
 ```
 require(plyr)
-temprec <- read.csv("Dharan_Bazar_temp1.csv", stringsAsFactors = FALSE)
+temprec <- read.table("Dharan_Bazar_temp1.csv", sep="," , stringsAsFactors = FALSE)
 temprec$Year <- strftime(as.Date(temprec$Date), format='%Y')
 temprecna <- ddply(temprec, c("Year"), function(df) c(MaxNA = sum(is.na(df$Max)),
                                                       MinNA = sum(is.na(df$Min)),
@@ -181,6 +181,25 @@ The ```meanseasonal``` dataframe summarises the mean toal seasonal rainfall calc
 4       Winter   40.2750  1.844495
 ```
 
+Computing monthly total and mean
+----------
+```
+monthly <- ddply(rainrec, c("Year", "Month"),
+                  function(df) c(Total = sum(as.numeric(df$Rainfall), na.rm=TRUE),
+                                 Mean = mean(as.numeric(df$Rainfall), na.rm=TRUE)))
+```
+This gives the dataframe ```monthly``` in the following format.
+
+```
+  Year Month Total       Mean
+1 2000     1  21.0  0.6774194
+2 2000     2  17.7  0.6103448
+3 2000     3   0.0  0.0000000
+4 2000     4 122.5  4.0833333
+5 2000     5 349.8 11.2838710
+6 2000     6 740.6 24.6866667
+```
+
 Computing monsoon onset day for each year
 ----------
 Again with the help of ```ddply``` the monsoon onset date for each year is computed in this example. Monsoon onset depends on various factors besides rainfall amount [1]. Since we are going to compute monsoononset only from rainfall data, the definition of monsoon onset is taken as any rainy day after June 1 with total rainfall of three consecutinve days exceeding 30mm. See [2] & [3] for detailed explaination. A day is counted as a rainy day if there is a rainfall of at least 0.85 mm. There are other similar criteria for calculating mosoon onset which can be done with little modification to the following code.
@@ -216,7 +235,7 @@ This returns a dataframe with year and their corrosponding monsoon onset days in
 
 Computing dry spell days
 ----------
-For this analysis, a dry spell is defined as at least 7 consecutive days of no rainfall after commencement of monsoon in the 30 days after monsoon commencement [2, pp 4]. A no rainfall day is defined as a day with less than 0.85 mm of rain. The following function first calculates monsoon onset day and checks the next 30 days for occurance of dry spells using ```rle``` function. The function outputs a dataframe which is parsed by ```ddply``` into columns.
+For this analysis, a dry spell is defined as at least 7 consecutive days of no rainfall after commencement of monsoon in the next 30 days [2, pp 4]. A no rainfall day is defined as a day with less than 0.85 mm of rain. The following function first calculates monsoon onset day and checks the next 30 days for occurance of dry spells using ```rle``` function. The function outputs a dataframe which is parsed by ```ddply``` into columns.
 
 ```
 is.rain <- function(x) x >= 0.85 #only days with >= 0.85mm of rain
@@ -324,8 +343,7 @@ rainproxy <- function(xlist) {
   return(xlist)
 }
 
-rainrec <- ddply(rainrec, c("Station"), transform,
-                 Rainfall2 = rainproxy(Rainfall))
+rainrec <- transform(rainrec, Rainfall2 = rainproxy(Rainfall))
 ```
 
 Computing rainfall anomalies
