@@ -346,6 +346,18 @@ rainproxy <- function(xlist) {
 rainrec <- transform(rainrec, Rainfall2 = rainproxy(Rainfall))
 ```
 
+Computing trend statistics
+----------
+The following code uses ```Kendall``` package for Kendall's test for trend.
+
+```
+trend.grain <- ddply(grain, c("Station"), function(xdf) {
+  x <- MannKendall(xdf$V1)
+  return(data.frame(grain_tau = x$tau[1],
+                    grain_p_value = x$sl[1]))
+})
+```
+
 Computing rainfall anomalies
 ----------
 
