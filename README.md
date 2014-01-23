@@ -348,7 +348,7 @@ rainrec <- transform(rainrec, Rainfall2 = rainproxy(Rainfall))
 
 Computing trend statistics
 ----------
-The following code uses ```Kendall``` package for Kendall's test for trend.
+The following code uses ```Kendall``` package for Kendall's test for trend the Kendall's tau value and p value are reported in a table.
 
 ```
 trend.grain <- ddply(grain, c("Station"), function(xdf) {
@@ -358,12 +358,27 @@ trend.grain <- ddply(grain, c("Station"), function(xdf) {
 })
 ```
 
-Computing rainfall anomalies
+Computing precipitation anomalies
 ----------
-
+For calculation of annual precipation anomalies, mean annual rainfall for each station is first computed. The anomaly for each year is given by substracting the value for that year with the mean for that station.
 
 ```
-#code
+annualmean <- ddply(annual, c("Station"),
+                    function(dfx) c(AnnMean = mean(as.numeric(dfx$Total), na.rm=TRUE)))
+annualmerged <- merge(annual, annualmean, by="Station")
+annualmerged$Anomaly <- annualmerged$Total - annualmerged$AnnMean
+```
+
+This outputs the dataframe in the following format
+
+```
+  Station Year  Total     Mean  AnnMean    Anomaly
+1  Anarma 2000 3038.1 8.300820 2704.283  333.81667
+2  Anarma 2001 3115.7 8.536164 2704.283  411.41667
+3  Anarma 2002 2603.1 7.131781 2704.283 -101.18333
+4  Anarma 2003 2789.7 7.643014 2704.283   85.41667
+5  Anarma 2004 2636.8 7.204372 2704.283  -67.48333
+6  Anarma 2005 1755.3 4.809041 2704.283 -948.98333
 ```
 
 References

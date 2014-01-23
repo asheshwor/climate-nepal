@@ -39,7 +39,7 @@ for (i in 1:length(locVars)) {
     varDay <- format(as.Date(varDate), "%j")
     #make a dataframe
     df <- data.frame(varDate,varRain, varDay)
-      
+    emptyDf <- rbind(emptyDf, df)  
   }
   
   #write emptyDf to a file
