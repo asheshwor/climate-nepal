@@ -29,7 +29,7 @@ Format for rainfall data:
 
 The following code reads rainfall record files of multiple stations and creates a continious record for each station as csv file. Each station's record should be in a separate folder. The daily rainfall records obtained from DHM is named in the ```AS####YY.yy``` where ```####``` is a four digit station code (leading 0 required for three digit codes), ```YY``` represents the first two digits of year and ```yy``` represents the last two digits for the year. For instance, a file ```AS142120.14```  is a daily rainfall record file for year 2014 for station 1421 which is Gaida Kankai in Eastern Nepal.
 
-The year number is extracted from the file name. The output file name is extraced based on the folder name which are named in the format ```Rain####``` where ```####``` is a four digit station code. E.g. ```Rain0105``` would be a folder containing daily rainfall records for Mahendranagar station (Station no. 0105)
+The year number is extracted from the file. The output file name is extraced based on the folder name which are named in the format ```Rain####``` where ```####``` is a four digit station code. E.g. ```Rain0105``` would be a folder containing daily rainfall records for Mahendranagar station (Station no. 105)
 
 
 ```
@@ -97,17 +97,52 @@ Format for temperature data:
 	 and so on
 ```
 
+The following code reads temperature record files of multiple stations and creates a continious record for each station in csv format. Each station's record should be in a separate folder. The daily temperature records obtained from DHM is named in the ```TA####YY.yy``` where ```####``` is a four digit station code (leading 0 required for three digit codes), ```YY``` represents the first two digits of year and ```yy``` represents the last two digits for the year. For instance, a file ```TA131120.14```  is a daily temperature record file for year 2014 for station 1311 which is Dharan Bazar in Eastern Nepal.
+
+The year number is extracted from the file. The output file name is extraced based on the folder name which are named in the format ```Temp####``` where ```####``` is a four digit station code. E.g. ```Temp0105``` would be a folder containing daily temperature records for Mahendranagar station (Station no. 105)
+
+
+```
+#set the directory which has folders for each station
+dirData <- "C:/metro_data/Run4/Temp"
+dirList <- list.dirs(dirData, full.names=TRUE, recursive=FALSE)
+#function to read, process and append record in each folder
+readTemperature <- function(xdir) {
+  xfilelist <- list.files(xdir, full.names=TRUE, pattern="TA")
+  temprecx <- data.frame(do.call("rbind", lapply(xfilelist,
+                                                 function(xfile) {
+    tempdata <- read.table(xfile, header=FALSE, skip=2)
+    dayNos <- tempdata$V1
+    yearNos <- paste0(substr(xfile, nchar(xfile)-4, nchar(xfile)-3),
+                      substr(xfile, nchar(xfile)-1, nchar(xfile)))
+    originDate <- paste0(yearNos, "-01-01")
+    varDate <- as.Date(dayNos - 1, origin = originDate)
+    varDate <- as.character(strptime(varDate, "%Y-%m-%d"))
+    varMax <- as.character(tempdata$V2)
+    varMin <- as.character(tempdata$V3)
+    #varDay <- format(as.Date(varDate), "%j")
+    cbind(varDate, varMax, varMin)
+  })))
+  outputFile <- paste0(dirData, "/", substr(xdir, nchar(xdir)-3, nchar(xdir)),
+                       "temp.csv")
+  write.csv(temprecx, file = outputFile, row.names=F)
+  return(outputFile)
+}
+#apply read and write functon to all folders
+lapply(dirList, readTemperature)
+```
+
 Format of converted temperature data in csv file:
 
 ```
-Date		Max		Min		Mean
-01-01-00	23		9		16
-02-01-00	22		11.5	16.75
-03-01-00	18		7.1		12.55
-04-01-00	20.9	7.5		14.5
-05-01-00	20		12.5	16.25
-06-01-00	20.5	4		16.88
-07-01-00	20		7		13.5
+Date		Max		Min	
+01-01-00	23		9		
+02-01-00	22		11.5	
+03-01-00	18		7.1		
+04-01-00	20.9	7.5		
+05-01-00	20		12.5	
+06-01-00	20.5	4		
+07-01-00	20		7		
  and so on
 ```
 
