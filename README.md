@@ -27,6 +27,41 @@ Format for rainfall data:
 	 and so on
 ```
 
+The following code reads rainfall record files of multiple stations and creates a continious record for each station as csv file. Each station's record should be in a separate folder. The daily rainfall records obtained from DHM is named in the ```AS####YY.yy``` where ```####``` is a four digit station code (leading 0 required for three digit codes), ```YY``` represents the first two digits of year and ```yy``` represents the last two digits for the year. For instance, a file ```AS142120.14```  is a daily rainfall record file for year 2014 for station 1421 which is Gaida Kankai in Eastern Nepal.
+
+The year number is extracted from the file name. The output file name is extraced based on the folder name which are named in the format ```Rain####``` where ```####``` is a four digit station code. E.g. ```Rain0105``` would be a folder containing daily rainfall records for Mahendranagar station (Station no. 0105)
+
+
+```
+#set the directory which has folders for each station
+dirData <- "X:/metro_data/Rainfall"
+dirList <- list.dirs(dirData, full.names=TRUE, recursive=FALSE)
+#function to read, process and append record in each folder
+readRain <- function(xdir) {
+  xfilelist <- list.files(xdir, full.names=TRUE, pattern="AS",
+                          recursive=TRUE, include.dirs=TRUE)
+  rainrecx <- data.frame(do.call("rbind", lapply(xfilelist,
+                                                 function(xfile) {
+    tempdata <- read.table(xfile, header=FALSE)
+    dayNos <- tempdata$V1
+    yearNos <- paste0(substr(xfile, nchar(xfile)-4, nchar(xfile)-3),
+                      substr(xfile, nchar(xfile)-1, nchar(xfile)))
+    originDate <- paste0(yearNos, "-01-01")
+    varDate <- as.Date(dayNos - 1, origin = originDate)
+    varDate <- as.character(strptime(varDate, "%Y-%m-%d"))
+    varRain <- as.character(tempdata$V2)
+    varDay <- format(as.Date(varDate), "%j")
+    cbind(varDate, varRain, varDay)
+  })))
+  outputFile <- paste0(dirData, "/", substr(xdir, nchar(xdir)-3, nchar(xdir)),
+                       "rain.csv")
+  write.csv(rainrecx, file = outputFile, row.names=F)
+  return(outputFile)
+}
+#apply read and write functon to all folders
+lapply(dirList, readRain)
+```
+
 Format of converted rainfall data csv file:
 
 ```
@@ -41,6 +76,7 @@ varDate	varRain	varDay
 08-01-00	0	8
  and so on
 ```
+
 
 Temperature data
 ----------
