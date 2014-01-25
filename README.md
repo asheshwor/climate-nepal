@@ -1,11 +1,11 @@
-Reading and tabulating Nepali climatic and hydrological records
+Reading and processing Nepali climatic and hydrological records
 ===============
 
-This is a collection of ```R``` code to process raw (ASCII) format data on climatic variables obtained from Department of Hydrology and Meteorology (DHM), Babarmahal, Kathmandu, Nepal. While the raw data can be opened in any text editor and copied to a spreadsheet, it can be quite a hassel when dealing with decades of data from multiple stations. I find it easy to read and combine the data in R which can be stored as csv or xlsx files for storing and further processing.
+This is a collection of ```R``` code to process raw (ASCII) format data on climatic variables obtained from Department of Hydrology and Meteorology (DHM), Babarmahal, Kathmandu, Nepal. While the raw data can be opened in any text editor and copied to a spreadsheet, it can be quite a hassel when dealing with decades of data from multiple stations.
 
-These are the code that I am using for my own research. I will continue to add the code for analysis as my research progresses.
+These are the code that I am using for my own research to read the raw data in R, batch combine records for each station and output the data in csv file. This is a work in progress and I will continue to add the code for analysis as my research progresses.
 
-No sample data is presented here as the data can only be obtained from DHM for upon written request and payment. The format for rainfall and temperature data is presented in the sections below. In both cases the yearly records are combined into one continious time-series object.
+No sample data is presented here as the data obtained from DHM cannot be shared publicly. The format for rainfall and temperature data is presented in the sections below with code sniplets to read and process the records.
 
 Rainfall data
 ----------
@@ -76,7 +76,6 @@ varDate	varRain	varDay
 08-01-00	0	8
  and so on
 ```
-
 
 Temperature data
 ----------
