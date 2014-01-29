@@ -203,6 +203,25 @@ Which results in the summary of NA count and T count values as a dataframe.
 6  2005          0      1
 ```
 
+Converting the data to RClimDex readable format
+----------
+The following code converts the rainfall data into RClimDex readable text format. The format for RClimDex is documented here (link).
+
+```
+rainrec.rclimdex <- cbind(rainrec.export$Year, rainrec.export$Month,
+                          as.numeric(strftime(as.Date(rainrec.export$Date), format='%d')),
+                          rainrec.export$Rainfall2)
+#add NA values for temp cols
+rainrec.rclimdex <- cbind(rainrec.rclimdex, rep(-99.9, length(rainrec.export$Year)),
+                          rep(-99.9, length(rainrec.export$Year)))
+#replace NAs with -99.9
+rainrec.df <- as.data.frame(rainrec.rclimdex)
+rainrec.df$V4[is.na(rainrec.df$V4)] <- -99.9
+write.table(rainrec.df, file = paste0(as.character(stationmerged$name[this.station]),
+                                ".txt"), sep="\t", col.names=FALSE,
+            row.names=FALSE)
+```
+
 Creating a time series of rainfall records
 ----------
 For seasonal and yearly statistics, the data can be conveted into a time series. Here is an example using the ```zoo``` package.
