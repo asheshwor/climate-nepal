@@ -291,8 +291,7 @@ This gives the dataframe ```monthly``` in the following format.
 
 Computing monsoon onset day for each year
 ----------
-Again with the help of ```ddply``` the monsoon onset date for each year is computed in this example. Monsoon onset depends on various factors besides rainfall amount [1]. Since we are going to compute monsoononset only from rainfall data, the definition of monsoon onset is taken as any rainy day after June 1 with total rainfall of three consecutinve days exceeding 30mm. See [2] & [3] for detailed explaination. A day is counted as a rainy day if there is a rainfall of at least 0.85 mm. There are other similar criteria for calculating mosoon onset which can be done with little modification to the following code.
-
+Again with the help of ```ddply``` the monsoon onset date for each year is computed in this example. Monsoon onset depends on various factors besides rainfall amount [1]. Since we are going to compute monsoon onset date only from rainfall data, the definition of monsoon onset is taken as any rainy day after June 1 with total rainfall of three consecutive days exceeding 30mm. See [2] & [3] for detailed explanation. A day is counted as a rainy day if there is a rainfall of at least 0.85 mm. There are other similar criteria for calculating monsoon onset which can be done with little modification to the following code.
 ```
 rainrec.mon <- rainrec[rainrec$Season == "Monsoon",] #isolate only monsoon days
 #replace NAs with 0
