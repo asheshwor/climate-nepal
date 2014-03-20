@@ -203,7 +203,7 @@ Which results in the summary of NA count and T count values as a dataframe.
 6  2005          0      1
 ```
 
-Converting the data to RClimDex readable format
+Converting data to RClimDex readable format
 ----------
 The following code converts the rainfall data into RClimDex readable text format. The format for RClimDex is documented here (link).
 
@@ -252,7 +252,7 @@ rainrec$Season <- factor(rainrec$Season, levels=c(1:4),
                                   "Post-monsoon", "Winter"))
 seasonal <- ddply(rainrec, c("Year", "Season"),
                   function(df) c(Total = sum(df$Rainfall, na.rm=TRUE)))
-#the following takes man annual rainfall from earlier calculation 
+#the following takes mean annual rainfall from earlier calculation 
 #   to calculate perecntage of seasonal means
 meanseasonal <- ddply(seasonal, c("Season"),
                       function(df) c(SMean = mean(df$Total, na.rm=TRUE),
@@ -469,6 +469,34 @@ This outputs the dataframe in the following format
 6  Anarma 2005 1755.3 4.809041 2704.283 -948.98333
 ```
 
+Hydrological data
+----------
+For daily discharge data, each text file contains daily records in cubimc m per second for the year in columnar format as shown below. The first nine lines of the file consists of the information on the station and title information. The final three lines of the file also contains the monthly summary of the data.
+
+```
+Station number: 120
+Location:       Nayal Badi                                                        Latitude: 29 40 20
+River:          Chamelia                                                         Longitude: 80 33 30
+
+Year:           2000
+
+                                    Mean daily discharge in m3/s
+                                    ============================
+
+Day     Jan.   Feb.   Mar.   Apr.   May    Jun.   Jul.   Aug.   Sep.   Oct.   Nov.   Dec.   Year
+ 01     25.6   21.6   21.5   29.3   34.7   40.3   99.0    283    230   75.1   39.6   27.5
+ 02     25.9   24.1   20.8   29.8   32.4   38.7   98.2    259    200   72.7   39.4   27.3
+ 03     25.6   22.7   21.0   79.1   34.0   38.9   98.0    187    202   69.0   39.1   27.3
+ 04     25.7   22.7   21.0   22.5   40.9   47.4   86.2    172    181   65.1   39.1   24.9
+ 05     35.6   23.8   21.3   28.4   43.7   45.8   85.5    148    156   67.7   38.6   26.3
+ 06     25.2   23.6   20.8   27.8   41.8   52.7   97.8    135    167   66.4   37.4   26.1
+ 07     25.0   23.2   78.4   28.4   37.0    113    156    138    762   65.1   36.9   27.7
+ ... and so on ...
+Min     21.8   20.8   20.5   25.6   32.4   38.7   85.5    130   76.7   40.1   28.4   21.8   20.5
+Mean    23.7   22.0   22.0   30.8   43.9   94.3    175    199    135   53.6   33.4   24.2   71.4
+Max     25.9   24.1   29.1   41.6   61.5    398    488    291    230   74.1   39.6   27.5    488
+ ```
+
 References
 -----------
 
@@ -476,7 +504,7 @@ References
 
 2. Karmacharya, J 2010, Exploring daily rainfall data to investigate evidence of climate change in Kathmandu Valley and its implication in rice farming in the area, Ministry of Agriculture, Kathmandu, Nepal.
 
-3. Upadhyay, S 2010, 'Monsoon variability analysis in Nepal from 1979 to 2008', Department of Environmental Science and Engineering, BSc Thesis thesis, Bachelor of Science (Honors) thesis, Kathmandu University.
+3. Upadhyay, S 2010, 'Monsoon variability analysis in Nepal from 1979 to 2008', Department of Environmental Science and Engineering, Bachelor of Science (Honors) thesis, Kathmandu University.
 
 4. Nayava, JL 1980, 'Rainfall in Nepal', Himalayan Review, vol. 12, pp. 1-18.
 
