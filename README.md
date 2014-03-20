@@ -58,7 +58,6 @@ readRain <- function(xdir) {
 }
 
 lapply(dirList, readRain) #apply the function to folders
-
 ```
 
 The same code with for loop.
@@ -398,7 +397,7 @@ The output dataframe ```drydate``` lists the number of dry days and the total le
 7  2006           0         0
 ```
 
-Alternative code for dry spell days withtout for loop with ```rolapply``` function from ```zoo``` package is given below.
+Alternative code for dry spell days withtout for loop with ```rollapply``` function from ```zoo``` package is given below.
 
 ```
 is.rain <- function(x) x >= 0.85 #only days with >= 0.85mm of rain
