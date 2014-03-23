@@ -33,7 +33,7 @@ The year number is extracted from the file. The output file name is extraced bas
 
 
 ```
-dirData <- "x:/metro_data/Rain" #directory with has folder(s)
+dirData <- "x:/metro_data/Rain" #directory which has folder(s)
 dirList <- list.dirs(dirData, full.names=TRUE, recursive=FALSE) #list of folders
 #*       Function to read and append rainfall files
 readRain <- function(xdir) {
