@@ -217,7 +217,9 @@ names(rainrec) <- c("Date", "Rainfall", "DOY")
 rainrec$Year <- strftime(as.Date(rainrec$Date, "%Y-%m-%d"), format='%Y') #add year column
 rainrecna <- ddply(rainrec, c("Year"), function(df) c(RainfallNA = sum(is.na(df$Rainfall)),
                                                       Tcount = sum(sapply(df$Rainfall,
-													  function(x) x=="T"))))
+													  function(x) {
+													  df$Rainfall[is.na(df$Rainfall)] <- -5
+													  x=="T"))))
 head(rainrecna)
 ```
 
