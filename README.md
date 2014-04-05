@@ -206,6 +206,27 @@ Which results in the summary of NA values as a dataframe.
 6  2005     0     0      0
 ```
 
+Growing length season (modified)
+----------
+The days between the first occurence of at least 6 consecutive days with mean temperature > 20 and the first occurance after July 1 of at least 6 consecutive days with mean tempareature < 20.
+
+```
+gslm.this <- function(xdf) {
+  xlist <- sapply(xdf$Mean, function(x) x > 20)
+  ylist <- sapply(xdf$Mean[182:length(xdf$Mean)], function(x) x < 20)
+  xrle <- rle(xlist)
+  yrle <- rle(ylist)
+  xdoy <- which((xrle$lengths >= 6) & xrle$values)
+  xsum <- cumsum(xrle$lengths)
+  xdoyref <- xsum[xdoy[1] - 1] + 1
+  ydoy <- which((yrle$lengths >= 6) & yrle$values)
+  ysum <- cumsum(yrle$lengths)
+  ydoyref <- ysum[ydoy[1] - 1] + 1 + 182
+  return(data.frame(GSL = ydoyref))
+}
+gslm <- ddply(temprec, c("Year"), gslm.this)
+```
+
 Counting NAs and Ts in rainfall records
 ----------
 
