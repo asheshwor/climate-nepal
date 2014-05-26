@@ -427,9 +427,11 @@ is.rain <- function(x) x >= 0.85 #only days with >= 0.85mm of rain
 drySpell3 <- function(xdf) {
   #first get monsoon onset
   monindex <- 0
-  reclen <- length(xdf$Rainfall) - 2
-  ## *** the following line needs correction. the values passed to rollapply should have NAs for no rain days
-  monindex <- min(which(sapply(rollapply(xdf$Rainfall, 3, sum, partial=1), function(x) x>= 30)))
+  #reclen <- length(xdf$Rainfall) - 2
+  ydf <- xdf
+  ydf$Rainfall2[ydf$Rainfall2<0.85] <- NA
+  ## *** corrected 2014-05-26
+  monindex <- min(which(sapply(rollapply(ydf$Rainfall, 3, sum, partial=3), function(x) x>= 30)))
   if (monindex == Inf) {monindex = NA;
                         return(data.frame(monsoon1 = NA,
                                           monsoon1DOY = NA,
