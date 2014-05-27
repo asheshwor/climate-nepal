@@ -9,7 +9,7 @@ No sample data is presented here as the data obtained from DHM cannot be shared 
 
 Rainfall data
 ----------
-For rainfall data, each file in the dataset consists of one year of rainfall records with each line represented by day of year (DOY) and rainfall for the corresponding DOY in millimeters (mm). The DOY ranges from 1 to 365 during non-leap years and from 1 to 366 in leap years. Missing data is denoted by string 'DNA' and 'trace amount of rainfall' is marked by string 'T'.
+For rainfall data, each file in the dataset consists of one year of rainfall records with each line represented by day of year (DOY) and rainfall for the corresponding DOY in millimetres (mm). The DOY ranges from 1 to 365 during non-leap years and from 1 to 366 in leap years. Missing data is denoted by string 'DNA' and 'trace amount of rainfall' is marked by string 'T'.
 
 Format for rainfall data:
 
@@ -27,9 +27,9 @@ Format for rainfall data:
 	 and so on
 ```
 
-The following code reads rainfall record files of multiple stations and creates a continious record for each station as csv file. Each station's record should be in a separate folder. The daily rainfall records obtained from DHM is named in the ```AS####YY.yy``` where ```####``` is a four digit station code (leading 0 required for three digit codes), ```YY``` represents the first two digits of year and ```yy``` represents the last two digits for the year. For instance, a file ```AS142120.14```  is a daily rainfall record file for year 2014 for station 1421 which is Gaida Kankai in Eastern Nepal.
+The following code reads rainfall record files of multiple stations and creates a continuous record for each station as csv file. Each station's record should be in a separate folder. The daily rainfall records obtained from DHM is named in the ```AS####YY.yy``` where ```####``` is a four digit station code (leading 0 required for three digit codes), ```YY``` represents the first two digits of year and ```yy``` represents the last two digits for the year. For instance, a file ```AS142120.14```  is a daily rainfall record file for year 2014 for station 1421 which is Gaida Kankai in Eastern Nepal.
 
-The year number is extracted from the file. The output file name is extraced based on the folder name which are named in the format ```Rain####``` where ```####``` is a four digit station code. E.g. ```Rain0105``` would be a folder containing daily rainfall records for Mahendranagar station (Station no. 105)
+The year number is extracted from the file. The output file name is extracted based on the folder name which are named in the format ```Rain####``` where ```####``` is a four digit station code. E.g. ```Rain0105``` would be a folder containing daily rainfall records for Mahendranagar station (Station no. 105)
 
 
 ```
@@ -126,9 +126,9 @@ Format for temperature data:
 	 and so on
 ```
 
-The following code reads temperature record files of multiple stations and creates a continious record for each station in csv format. Each station's record should be in a separate folder. The daily temperature records obtained from DHM is named in the ```TA####YY.yy``` where ```####``` is a four digit station code (leading 0 required for three digit codes), ```YY``` represents the first two digits of year and ```yy``` represents the last two digits for the year. For instance, a file ```TA131120.14```  is a daily temperature record file for year 2014 for station 1311 which is Dharan Bazar in Eastern Nepal.
+The following code reads temperature record files of multiple stations and creates a continuous record for each station in csv format. Each station's record should be in a separate folder. The daily temperature records obtained from DHM is named in the ```TA####YY.yy``` where ```####``` is a four digit station code (leading 0 required for three digit codes), ```YY``` represents the first two digits of year and ```yy``` represents the last two digits for the year. For instance, a file ```TA131120.14```  is a daily temperature record file for year 2014 for station 1311 which is Dharan Bazar in Eastern Nepal.
 
-The year number is extracted from the file. The output file name is extraced based on the folder name which are named in the format ```Temp####``` where ```####``` is a four digit station code. E.g. ```Temp0105``` would be a folder containing daily temperature records for Mahendranagar station (Station no. 105)
+The year number is extracted from the file. The output file name is extracted based on the folder name which are named in the format ```Temp####``` where ```####``` is a four digit station code. E.g. ```Temp0105``` would be a folder containing daily temperature records for Mahendranagar station (Station no. 105)
 
 
 ```
@@ -208,7 +208,7 @@ Which results in the summary of NA values as a dataframe.
 
 Growing length season (modified)
 ----------
-The days between the first occurence of at least 6 consecutive days with mean temperature > 20 and the first occurance after July 1 of at least 6 consecutive days with mean tempareature < 20.
+The days between the first occurrence of at least 6 consecutive days with mean temperature > 20 and the first occurrence after July 1 of at least 6 consecutive days with mean temperature < 20.
 
 ```
 gslm.this <- function(xdf) {
@@ -277,7 +277,7 @@ write.table(rainrec.df, file = paste0(as.character(stationmerged$name[this.stati
 
 Creating a time series of rainfall records
 ----------
-For seasonal and yearly statistics, the data can be conveted into a time series. Here is an example using the ```zoo``` package.
+For seasonal and yearly statistics, the data can be converted into a time series. Here is an example using the ```zoo``` package.
 
 ```
 require(zoo)
