@@ -1,7 +1,7 @@
 Reading and processing Nepali climatic and hydrological records
 ===============
 
-This is a collection of ```R``` code to process raw (ASCII) format data on climatic variables obtained from Department of Hydrology and Meteorology (DHM), Babarmahal, Kathmandu, Nepal. While the raw data can be opened in any text editor and copied to a spreadsheet, it can be quite a hassel when dealing with decades of data from multiple stations.
+This is a collection of ```R``` code to process raw (ASCII) format data on climatic variables obtained from the Department of Hydrology and Meteorology (DHM), Babarmahal, Kathmandu, Nepal. While the raw data can be opened in any text editor and copied to a spreadsheet, it can be quite a hassle when dealing with decades of data from multiple stations.
 
 These are the code that I am using for my own research to read the raw data in R, batch combine records for each station and output the data in csv file. This is a work in progress and I will continue to add the code for analysis as my research progresses.
 
