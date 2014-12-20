@@ -128,7 +128,7 @@ Format for temperature data:
 
 The following code reads temperature record files of multiple stations and creates a continuous record for each station in csv format. Each station's record should be in a separate folder. The daily temperature records obtained from DHM is named in the ```TA####YY.yy``` where ```####``` is a four digit station code (leading 0 required for three digit codes), ```YY``` represents the first two digits of year and ```yy``` represents the last two digits for the year. For instance, a file ```TA131120.14```  is a daily temperature record file for year 2014 for station 1311 which is Dharan Bazar in Eastern Nepal.
 
-The year number is extracted from the file. The output file name is extracted based on the folder name which are named in the format ```Temp####``` where ```####``` is a four digit station code. E.g. ```Temp0105``` would be a folder containing daily temperature records for Mahendranagar station (Station no. 105).
+The year number is extracted from the file. The output file name is extracted based on the folder name which are in the ```Temp####``` format where ```####``` is a four digit station code. E.g. ```Temp0105``` would be a folder containing daily temperature records for Mahendranagar station (Station no. 105).
 
 
 ```
@@ -258,7 +258,7 @@ Which results in the summary of NA count and T count values as a dataframe.
 
 Converting data to RClimDex readable format
 ----------
-The following code converts the rainfall data into RClimDex readable text format. The format for RClimDex is documented here (link).
+The following code converts the rainfall data into RClimDex readable text format. The format for RClimDex is documented here (http://etccdi.pacificclimate.org/RClimDex/RClimDexUserManual.doc).
 
 ```
 rainrec.rclimdex <- cbind(rainrec.export$Year, rainrec.export$Month,
