@@ -128,7 +128,7 @@ Format for temperature data:
 
 The following code reads temperature record files of multiple stations and creates a continuous record for each station in csv format. Each station's record should be in a separate folder. The daily temperature records obtained from DHM is named in the ```TA####YY.yy``` where ```####``` is a four digit station code (leading 0 required for three digit codes), ```YY``` represents the first two digits of year and ```yy``` represents the last two digits for the year. For instance, a file ```TA131120.14```  is a daily temperature record file for year 2014 for station 1311 which is Dharan Bazar in Eastern Nepal.
 
-The year number is extracted from the file. The output file name is extracted based on the folder name which are named in the format ```Temp####``` where ```####``` is a four digit station code. E.g. ```Temp0105``` would be a folder containing daily temperature records for Mahendranagar station (Station no. 105)
+The year number is extracted from the file. The output file name is extracted based on the folder name which are named in the format ```Temp####``` where ```####``` is a four digit station code. E.g. ```Temp0105``` would be a folder containing daily temperature records for Mahendranagar station (Station no. 105).
 
 
 ```
@@ -344,7 +344,8 @@ This gives the dataframe ```monthly``` in the following format.
 
 Computing monsoon onset day for each year
 ----------
-Again with the help of ```ddply``` the monsoon onset date for each year is computed in this example. Monsoon onset depends on various factors besides rainfall amount [1]. Since we are going to compute monsoon onset date only from rainfall data, the definition of monsoon onset is taken as any rainy day after June 1 with total rainfall of three consecutive days exceeding 30mm. See [2] & [3] for detailed explanation. A day is counted as a rainy day if there is a rainfall of at least 0.85 mm. There are other similar criteria for calculating monsoon onset which can be done with little modification to the following code.
+Again with the help of ```ddply``` the monsoon onset date for each year is computed as shown in this example. Monsoon onset depends on various factors besides rainfall amount [1]. Since we are going to compute monsoon onset date only from rainfall data, the definition of monsoon onset is taken as any rainy day after June 1 with total rainfall of three consecutive days exceeding 30mm. See [2] & [3] for detailed explanation. A day is counted as a rainy day if there is a rainfall of at least 0.85 mm. There are other similar criteria for calculating monsoon onset which can be done with little modification to the following code.
+
 ```
 rainrec.mon <- rainrec[rainrec$Season == "Monsoon",] #isolate only monsoon days
 #replace NAs with 0
