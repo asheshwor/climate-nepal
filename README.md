@@ -109,7 +109,7 @@ varDate	varRain	varDay
 
 Temperature data
 ----------
-The first line of each of the files for temperature data consists of the corresponding 4 digit year number and name of the station. The second line consists of column headings for maximum and minimum temperatures. From the third line onwards, each text file in the dataset consists of one year of temperature records with each line represented by DOY, maximum temperature and minimum temperature for the corresponding DOY in Celsius (�C). The DOY ranges from 1 to 365 during non-leap years and from 1 to 366 in leap years.
+The first line of each of the files for temperature data consists of the corresponding 4 digit year number and name of the station. The second line consists of column headings for maximum and minimum temperatures. From the third line onwards, each text file in the dataset consists of one year of temperature records with each line represented by DOY, maximum temperature and minimum temperature for the corresponding DOY in Celsius (°C). The DOY ranges from 1 to 365 during non-leap years and from 1 to 366 in leap years.
 
 Format for temperature data:
 
@@ -494,7 +494,7 @@ rainrec <- transform(rainrec, Rainfall2 = rainproxy(Rainfall))
 Visualization of monsoon rainfall
 ----------
 
-The ```rainfall-viz.R``` takes the monsoon rainfall data and plots for each year the daily rainfall, monsoon onset date, dry spell days and marks a successful plantation date if there is one. The rainfall amount less than the threshold value (0.85mm per day by default) are not shown. The dry-spell days are marked in light red, and successful plantation date i.e. no dry-spell days in 30 days after the monsoon onset date is marked in light green.
+The ```rainfall-viz.R``` takes the monsoon rainfall data and plots for each year the daily rainfall, the monsoon onset date, shades the occurenes of dry spell days if there are any and marks a successful plantation date if there is one. The rainfall amount less than the threshold value (0.85mm per day by default) are not shown. The dry-spell days are marked in light red, and successful plantation date i.e. no dry-spell days in 30 days after the monsoon onset date is marked in light green.
 
 ![R plot](plots/rainviz01.png)
 
