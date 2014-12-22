@@ -399,7 +399,7 @@ drySpell2 <- function(xdf) {
   rainlist.F <- rle.rain$lengths[!rle.rain$values]
   #total number of dry spells
   rainlist.F.count <- sum(sapply(rainlist.F, function(x) x >= 7))
-  #total days of dry spell
+  #total  dry spell days
   rainlist.F.len <- 0
   if (rainlist.F.count >= 1) 
      { rainlist.F.len <- sum(sapply(rainlist.F[rainlist.F >= 7], sum)) }
@@ -494,7 +494,7 @@ rainrec <- transform(rainrec, Rainfall2 = rainproxy(Rainfall))
 Visualization of monsoon rainfall
 ----------
 
-The ```rainfall-viz.R``` takes the monsoon rainfall data and plots for each year the daily rainfall, the monsoon onset date, shades the occurenes of dry spell days if there are any and marks a successful plantation date if there is one. The rainfall amount less than the threshold value (0.85mm per day by default) are not shown. The dry-spell days are marked in light red, and successful plantation date i.e. no dry-spell days in 30 days after the monsoon onset date is marked in light green.
+The ```rainfall-viz.R``` takes the monsoon rainfall data and plots the daily rainfall and the monsoon onset datefor each year, shades the occurenes of dry spell days if there are any and marks a successful plantation date if there is one. The rainfall amount less than the threshold value (0.85mm per day by default) are not shown. The dry-spell days are marked in light red, and successful plantation date i.e. no dry-spell days in 30 days after the monsoon onset date is marked in light green.
 
 ![R plot](plots/rainviz01.png)
 
