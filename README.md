@@ -7,6 +7,10 @@ These are the code that I am using for my own research to read the raw data in R
 
 No sample data is presented here as the data obtained from DHM cannot be shared publicly. The format for rainfall and temperature data is presented in the sections below with code sniplets to read and process the records.
 
+Publications using the code for analysis
+----------
+{list of publications using parts of the code for climate data analysis}
+
 Rainfall data
 ----------
 For rainfall data, each file in the dataset consists of one year of rainfall records with each line represented by day of year (DOY) and rainfall for the corresponding DOY in millimetres (mm). The DOY ranges from 1 to 365 during non-leap years and from 1 to 366 in leap years. Missing data is denoted by string 'DNA' and 'trace amount of rainfall' is marked by string 'T'.
