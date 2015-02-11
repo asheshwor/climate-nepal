@@ -191,7 +191,8 @@ One of the first we do once we get daily records is to check for days with no re
 
 ```
 require(plyr)
-temprec <- read.table("Dharan_Bazar_temp1.csv", sep="," , stringsAsFactors = FALSE)
+temprec <- read.table("Dharan_Bazar_temp1.csv", sep="," ,
+stringsAsFactors = FALSE)
 temprec$Year <- strftime(as.Date(temprec$Date), format='%Y')
 temprecna <- ddply(temprec, c("Year"), function(df) c(MaxNA = sum(is.na(df$Max)),
                                                       MinNA = sum(is.na(df$Min)),
@@ -239,7 +240,8 @@ For most analysis, the days with trace amount of rainfall is replaced with 0. Be
 ```
 rainrec <- read.csv(paste0("x:/DHM_data/Rain/", c("Dharan_Bazar.csv")), stringsAsFactors = FALSE)
 names(rainrec) <- c("Date", "Rainfall", "DOY")
-rainrec$Year <- strftime(as.Date(rainrec$Date, "%Y-%m-%d"), format='%Y') #add year column
+rainrec$Year <- strftime(as.Date(rainrec$Date, "%Y-%m-%d"),
+format='%Y') #add year column
 rainrecna <- ddply(rainrec, c("Year"), function(df) c(RainfallNA = sum(is.na(df$Rainfall)),
                                                       Tcount = sum(sapply(df$Rainfall,
 													  function(x) {
@@ -399,7 +401,8 @@ drySpell2 <- function(xdf) {
   monindex <- monindex + 1 #we only need to check from the day after monsoon onset
   reclen2 <- length(xdf$Rainfall)
   rainlist.F.count <- 0; rainlist.F.len <- 0
-  rle.rain <- rle(sapply(xdf$Rainfall[monindex:(monindex+30)], is.rain)) #check next 30 days
+  rle.rain <- rle(sapply(xdf$Rainfall[monindex:(monindex+30)],
+  is.rain)) #check next 30 days
   rainlist.F <- rle.rain$lengths[!rle.rain$values]
   #total number of dry spells
   rainlist.F.count <- sum(sapply(rainlist.F, function(x) x >= 7))
