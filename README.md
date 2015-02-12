@@ -518,6 +518,35 @@ trend.grain <- ddply(grain, c("Station"), function(xdf) {
 })
 ```
 
+Code for creating table for linear regression statistics. The table is presented below the code.
+
+```
+trend.smk.max.lm.av <- ddply(temprec, c("Station"), function(xdf) {
+  ann.min <- ddply(xdf, c("Year"), function(ydf) {max(ydf$Min2, na.rm=TRUE)} )
+  fit <- lm(ann.min$V1 ~ ann.min$Year)
+  x <- summary(fit)
+  p <- round(x$coefficients[7], 3)
+  r <- round(x$r.squared, 3)
+  #confidence interval
+  cf <- confint(fit, level=0.95)
+  return(data.frame(max_lm_r_squared = r,
+                    max_lm_p_value = p,
+                    low_95 = cf[2],
+                    high_95 = cf[4]))
+})
+print(trend.smk.max.lm.av)
+```
+
+```
+            Station max_lm_r_squared max_lm_p_value      low_95     high_95
+1 Dhangadhi_Atariya            0.046          0.073 -0.06810873 0.018720521
+2      Nepalgunj_RO            0.011          0.618 -0.01903439 0.035816885
+3 Nepalgunj_Airport            0.169          0.057 -0.17849776 0.017713447
+4      Dharan_Bazar            0.026          0.746 -0.10166887 0.168701841
+5          Tarahara            0.046          0.748 -0.01829748 0.057887225
+6      Gaida_Kankai            0.264          0.038 -0.14710102 0.007540581
+```
+
 Computing precipitation anomalies
 ----------
 For calculation of annual precipation anomalies, mean annual rainfall for each station is first computed. The anomaly for each year is given by substracting the value for that year with the mean for that station.
