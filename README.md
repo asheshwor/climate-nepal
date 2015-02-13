@@ -113,7 +113,7 @@ varDate	varRain	varDay
 
 Temperature data
 ----------
-The first line of each of the files for temperature data consists of the corresponding 4 digit year number and name of the station. The second line consists of column headings for maximum and minimum temperatures. From the third line onwards, each text file in the dataset consists of one year of temperature records with each line represented by DOY, maximum temperature and minimum temperature for the corresponding DOY in Celsius (°C). The DOY ranges from 1 to 365 during non-leap years and from 1 to 366 in leap years.
+The first line of each of the files for temperature data consists of the corresponding 4 digit year number and the station name. The second line consists of column headings for maximum and minimum temperatures. From the third line onwards, each text file in the dataset consists of one year of temperature records with each line represented by DOY, maximum temperature and minimum temperature for the corresponding DOY in Celsius (°C). The DOY ranges from 1 to 365 during non-leap years and from 1 to 366 in leap years.
 
 Format for temperature data:
 
@@ -130,14 +130,14 @@ Format for temperature data:
 	 and so on
 ```
 
-The following code reads temperature record files of multiple stations and creates a continuous record for each station in csv format. Each station's record should be in a separate folder. The daily temperature records obtained from DHM is named in the ```TA####YY.yy``` where ```####``` is a four digit station code (leading 0 required for three digit codes), ```YY``` represents the first two digits of year and ```yy``` represents the last two digits for the year. For instance, a file ```TA131120.14```  is a daily temperature record file for year 2014 for station 1311 which is Dharan Bazar in Eastern Nepal.
+The following code reads temperature record files of multiple stations from a folder and creates a continuous record for each station in csv format. Each station's record should be in a separate folder. The daily temperature records obtained from DHM is named in the ```TA####YY.yy``` where ```####``` is a four digit station code (leading 0 required for three digit codes), ```YY``` represents the first two digits of year and ```yy``` represents the last two digits for the year. For instance, a file ```TA131120.14```  is a daily temperature record file for year 2014 for station 1311 which is Dharan Bazar in Eastern Nepal.
 
 The year number is extracted from the file. The output file name is extracted based on the folder name which are in the ```Temp####``` format where ```####``` is a four digit station code. E.g. ```Temp0105``` would be a folder containing daily temperature records for Mahendranagar station (Station no. 105).
 
 
 ```
 #set the directory which has folders for each station
-dirData <- "C:/metro_data/Run4/Temp"
+dirData <- "x:/metro_data/Run4/Temp"
 dirList <- list.dirs(dirData, full.names=TRUE, recursive=FALSE)
 #function to read, process and append record in each folder
 readTemperature <- function(xdir) {
