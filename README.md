@@ -518,7 +518,7 @@ trend.grain <- ddply(grain, c("Station"), function(xdf) {
 })
 ```
 
-Code for creating table for linear regression statistics. The table is presented below the code.
+Code for creating table for linear regression statistics. The regression statistics are summarized in a dataframe. The output dataframe is presented below the code.
 
 ```
 trend.smk.max.lm.av <- ddply(temprec, c("Station"), function(xdf) {
