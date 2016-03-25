@@ -36,7 +36,7 @@ The following code reads rainfall record files of multiple stations and creates 
 The year number is extracted from the file. The output file name is extracted based on the folder name which are named in the format ```Rain####``` where ```####``` is a four digit station code. E.g. ```Rain0105``` would be a folder containing daily rainfall records for Mahendranagar station (Station no. 105)
 
 
-```
+```R
 dirData <- "x:/metro_data/Rain" #directory which has folder(s)
 dirList <- list.dirs(dirData, full.names=TRUE, recursive=FALSE) #list of folders
 #*       Function to read and append rainfall files
@@ -66,7 +66,7 @@ lapply(dirList, readRain) #apply the function to folders
 
 The same code with for loop.
 
-```
+```R
 #set the directory which has folders for each station
 dirData <- "X:/metro_data/Rainfall"
 dirList <- list.dirs(dirData, full.names=TRUE, recursive=FALSE)
@@ -135,7 +135,7 @@ The following code reads temperature record files of multiple stations from a fo
 The year number is extracted from the file. The output file name is extracted based on the folder name which are in the ```Temp####``` format where ```####``` is a four digit station code. E.g. ```Temp0105``` would be a folder containing daily temperature records for Mahendranagar station (Station no. 105).
 
 
-```
+```R
 #set the directory which has folders for each station
 dirData <- "x:/metro_data/Run4/Temp"
 dirList <- list.dirs(dirData, full.names=TRUE, recursive=FALSE)
@@ -189,7 +189,7 @@ Counting NAs in temperature records
 ----------
 One of the first we do once we get daily records is to check for days with no records. While there are many ways to count NA values in R, here's an example using ```ddply``` function from ```plyr``` package.
 
-```
+```R
 require(plyr)
 temprec <- read.table("Dharan_Bazar_temp1.csv", sep="," ,
 stringsAsFactors = FALSE)
@@ -215,7 +215,7 @@ Growing length season (modified)
 ----------
 The days between the first occurrence of at least 6 consecutive days with mean temperature > 20 and the first occurrence after July 1 of at least 6 consecutive days with mean temperature < 20.
 
-```
+```R
 gslm.this <- function(xdf) {
   xlist <- sapply(xdf$Mean, function(x) x > 20)
   ylist <- sapply(xdf$Mean[182:length(xdf$Mean)], function(x) x < 20)
@@ -237,7 +237,7 @@ Counting NAs and Ts in rainfall records
 
 For most analysis, the days with trace amount of rainfall is replaced with 0. Before replacing, it may be a good idea to count the number of NAs and Ts. Here's the code to do just that for each year again using ```ddply``` function from ```plyr``` package.
 
-```
+```R
 rainrec <- read.csv(paste0("x:/DHM_data/Rain/", c("Dharan_Bazar.csv")), stringsAsFactors = FALSE)
 names(rainrec) <- c("Date", "Rainfall", "DOY")
 rainrec$Year <- strftime(as.Date(rainrec$Date, "%Y-%m-%d"),
@@ -266,7 +266,7 @@ Converting data to RClimDex readable format
 ----------
 The following code converts the rainfall data into RClimDex readable text format. The format for RClimDex is documented here (http://etccdi.pacificclimate.org/RClimDex/RClimDexUserManual.doc).
 
-```
+```R
 rainrec.rclimdex <- cbind(rainrec.export$Year, rainrec.export$Month,
                           as.numeric(strftime(as.Date(rainrec.export$Date), format='%d')),
                           rainrec.export$Rainfall2)
@@ -285,7 +285,7 @@ Creating a time series of rainfall records
 ----------
 For seasonal and yearly statistics, the data can be converted into a time series. Here is an example using the ```zoo``` package.
 
-```
+```R
 require(zoo)
 #replace Ts with 0
 rainrec$Rainfall[rainrec$Rainfall == "T"] <- 0
@@ -304,7 +304,7 @@ Computing seasonal rainfall statistics
 ----------
 The following code uses ```ddply``` to aggregate seasonal statistics. The year is divided into four seasons with Pre-monsoon for the months of March to May, Monsoon for the months of June to September, Post-monsoon for the months of October - November and Winter for the months of December to February. Although this is the general practice, there are alternative definition of seasons in Nepal (see [4] for example).
 
-```
+```R
 rainrec$Month <- as.numeric(strftime(as.Date(rainrec$Date), format='%m'))
 rainrec$Season <- factor(rainrec$Season, levels=c(1:4),
                          labels=c("Pre-monsoon", "Monsoon",
@@ -331,7 +331,7 @@ The ```meanseasonal``` dataframe summarises the mean toal seasonal rainfall calc
 
 Computing monthly total and mean
 ----------
-```
+```R
 monthly <- ddply(rainrec, c("Year", "Month"),
                   function(df) c(Total = sum(as.numeric(df$Rainfall), na.rm=TRUE),
                                  Mean = mean(as.numeric(df$Rainfall), na.rm=TRUE)))
@@ -352,7 +352,7 @@ Computing monsoon onset day for each year
 ----------
 Again with the help of ```ddply``` the monsoon onset date for each year is computed as shown in this example. Monsoon onset depends on various factors besides rainfall amount [1]. Since we are going to compute monsoon onset date only from rainfall data, the definition of monsoon onset is taken as any rainy day that occurs after June 1 with total rainfall of three consecutive days exceeding 30mm. See [2] & [3] for detailed explanation. A day is counted as a rainy day if there is a rainfall of at least 0.85 mm. There are other similar criteria for calculating monsoon onset which can be done with little modification to the following code. For official dates of monsoon onset and withdrawal for Nepal, see [DHM official announcement on monsoon onset and withdrawal](http://www.dhm.gov.np/uploads/climatic/1622225684monsoon%20onset%20n%20withdrawal.pdf).
 
-```
+```R
 rainrec.mon <- rainrec[rainrec$Season == "Monsoon",] #isolate only monsoon days
 #replace NAs with 0
 rainrec.mon$Rainfall[is.na(rainrec.mon$Rainfall)] <- 0
@@ -385,7 +385,7 @@ Computing dry spell days
 ----------
 For this analysis, a dry spell is defined as at least 7 consecutive days of no rainfall after commencement of monsoon in the next 30 days [2, pp 4]. A no rainfall day is defined as a day with less than 0.85 mm of rain. The following function first calculates monsoon onset day and checks the next 30 days for occurance of dry spells using ```rle``` function. The function outputs a dataframe which is parsed by ```ddply``` into columns.
 
-```
+```R
 is.rain <- function(x) x >= 0.85 #only days with >= 0.85mm of rain
 drySpell2 <- function(xdf) {
   #first get monsoon onset
@@ -430,7 +430,7 @@ The output dataframe ```drydate``` lists the number of dry days and the total le
 
 Alternative code for dry spell days withtout for loop with ```rollapply``` function from ```zoo``` package is given below.
 
-```
+```R
 is.rain <- function(x) x >= 0.85 #only days with >= 0.85mm of rain
 drySpell3 <- function(xdf) {
   #first get monsoon onset
@@ -484,7 +484,7 @@ Replacing NA rainfall with proxy values
 As the spatial interpolation of precipitation data is not recommended for Nepali terrain [5], the missing rainfall is replaced by a proxy based on the value of the day in the previous year and the value for the day in the next year. The following code does not take into account of leap years. In the case when the first year's data is missing, only the value from the next year is used.
 
 
-```
+```R
 rainproxy <- function(xlist) {
   nax <- which(is.na(xlist))
   naxi <- nax + 365 #next year; does not take into a/c of leap year
@@ -510,7 +510,7 @@ Computing trend statistics
 ----------
 The following code uses ```Kendall``` package for Kendall's test for trend the Kendall's tau value and p value are reported in a table.
 
-```
+```R
 trend.grain <- ddply(grain, c("Station"), function(xdf) {
   x <- MannKendall(xdf$V1)
   return(data.frame(grain_tau = x$tau[1],
@@ -520,7 +520,7 @@ trend.grain <- ddply(grain, c("Station"), function(xdf) {
 
 Code for creating table for linear regression statistics. The regression statistics are summarized in a dataframe. The output dataframe is presented below the code.
 
-```
+```R
 trend.smk.max.lm.av <- ddply(temprec, c("Station"), function(xdf) {
   ann.min <- ddply(xdf, c("Year"), function(ydf) {max(ydf$Min2, na.rm=TRUE)} )
   fit <- lm(ann.min$V1 ~ ann.min$Year)
@@ -551,7 +551,7 @@ Computing precipitation anomalies
 ----------
 For calculation of annual precipation anomalies, mean annual rainfall for each station is first computed. The anomaly for each year is given by substracting the value for that year with the mean for that station.
 
-```
+```R
 annualmean <- ddply(annual, c("Station"),
                     function(dfx) c(AnnMean = mean(as.numeric(dfx$Total), na.rm=TRUE)))
 annualmerged <- merge(annual, annualmean, by="Station")
