@@ -1,0 +1,77 @@
+---
+title: "R Notebook"
+output:
+  word_document: default
+  html_notebook: default
+editor_options:
+  chunk_output_type: console
+---
+
+# Get GSOD climate data for Nepal
+
+Historic climate data for available stations in Nepal.
+
+## LOAD LIBRARIES
+
+```{r}
+library(knitr)
+library(gsod)
+library(GSODR)
+library(tidyverse)
+library(leaflet)
+library(lubridate)
+library(broom)
+```
+
+## GET LIST OF STATIONS 
+
+```{r eval=FALSE}
+load(system.file("extdata", "isd_history.rda", package = "GSODR"))
+np <- subset(isd_history, ISO2C == "NP")
+kable(np)
+```
+
+## GET DATA FROM STATIONS
+
+There are 17 stations listed. Now, fetch data for those stations. *Takes a while to run.*
+
+```{r}
+np.data <- get_GSOD(years = c(1990:2019), station = np$STNID)
+head(np.data)
+```
+
+Summary of retrieved data:
+
+```{r}
+data.summary <- data.20xx.merged %>%
+  mutate(ychar = year(YEARMODA)) %>% 
+  # select(-LATITUDE, - LONGITUDE)
+  group_by(STNID, city, CTRY, ychar) %>% 
+  tally() %>% 
+  arrange(city, ychar)
+kable(data.summary)
+```
+
+Save output:
+
+```{r}
+write.csv(data.20xx.merged, "climatedata_2017-2020.csv",
+          row.names = FALSE)
+```
+
+Check station locations
+
+```{r}
+df <- data.20xx %>% 
+  group_by(STNID, NAME, LATITUDE, LONGITUDE) %>% 
+  tally()
+pu <- paste("<b>STNID:</b>", as.character(df$STNID), "<br>",
+            "<b>NAME:</b>", df$NAME, "<br>",
+            "<b>CTRY</b>", df$CTRY, "<br>")
+            # "<b>COUNTRY_NAME</b>", df$COUNTRY_NAME, "<br>")
+#provider = "CartoDB.Positron"
+lmap <- leaflet(df) %>% 
+  addTiles() %>% 
+  addMarkers(popup = pu)
+lmap
+```
