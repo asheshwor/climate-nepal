@@ -35,20 +35,34 @@ kable(np)
 
 There are 17 stations listed. Now, fetch data for those stations. *Takes a while to run.*
 
-```{r}
+```{r eval=FALSE}
 np.data <- get_GSOD(years = c(1990:2019), station = np$STNID)
 head(np.data)
+tail(np.data)
+nrow(np.data) #37.3k
+```
+
+Save data to file.
+
+```{r eval=FALSE}
+write.csv(np.data, "np_gsod_1990-2019.csv", row.names = FALSE)
+```
+
+Read saved data:
+
+```{r}
+np.data <- read.csv("D:/github/climate-nepal/data/np_gsod_1990-2019.csv")
+# head(np.data)
 ```
 
 Summary of retrieved data:
 
 ```{r}
-data.summary <- data.20xx.merged %>%
-  mutate(ychar = year(YEARMODA)) %>% 
+data.summary <- np.data %>%
   # select(-LATITUDE, - LONGITUDE)
-  group_by(STNID, city, CTRY, ychar) %>% 
+  group_by(STNID, NAME, YEAR) %>% 
   tally() %>% 
-  arrange(city, ychar)
+  arrange(NAME, YEAR)
 kable(data.summary)
 ```
 
