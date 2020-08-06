@@ -51,15 +51,16 @@ write.csv(np.data, "np_gsod_1990-2019.csv", row.names = FALSE)
 Read saved data:
 
 ```{r}
-np.data <- read.csv("D:/github/climate-nepal/data/np_gsod_1990-2019.csv")
-# head(np.data)
+np.data <- read.csv("D:/rwd/dataset/np_gsod_1990-2019.csv")
+head(np.data)
 ```
 
 Summary of retrieved data:
 
 ```{r}
+names(np.data)
 data.summary <- np.data %>%
-  # select(-LATITUDE, - LONGITUDE)
+  select(STNID, NAME, YEAR, PRCP) %>% 
   group_by(STNID, NAME, YEAR) %>% 
   tally() %>% 
   arrange(NAME, YEAR)
@@ -69,22 +70,18 @@ kable(data.summary)
 Save output:
 
 ```{r}
-write.csv(data.20xx.merged, "climatedata_2017-2020.csv",
+write.csv(data.summary, "climatedata_2017-2020.csv",
           row.names = FALSE)
 ```
 
-Check station locations
+Check station locations on a map.
 
 ```{r}
-df <- data.20xx %>% 
-  group_by(STNID, NAME, LATITUDE, LONGITUDE) %>% 
-  tally()
-pu <- paste("<b>STNID:</b>", as.character(df$STNID), "<br>",
-            "<b>NAME:</b>", df$NAME, "<br>",
-            "<b>CTRY</b>", df$CTRY, "<br>")
-            # "<b>COUNTRY_NAME</b>", df$COUNTRY_NAME, "<br>")
+pu <- paste("<b>STNID:</b>", as.character(np$STNID), "<br>",
+            "<b>NAME:</b>", np$NAME, "<br>",
+            "<b>DATES:</b>", paste0(np$BEGIN, "-",np$END), "<br>")
 #provider = "CartoDB.Positron"
-lmap <- leaflet(df) %>% 
+lmap <- leaflet(np) %>% 
   addTiles() %>% 
   addMarkers(popup = pu)
 lmap
