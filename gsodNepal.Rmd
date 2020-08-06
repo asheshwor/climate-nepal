@@ -86,3 +86,38 @@ lmap <- leaflet(np) %>%
   addMarkers(popup = pu)
 lmap
 ```
+
+Stations from DHM, Nepal.
+http://www.dhm.gov.np/meteorological-station/ accessed 06/08/2020.
+
+```{r}
+np.stations <- read.csv("D:/rwd/dataset/dhm_stations.csv")
+head(np.stations)
+np.stations <- np.stations %>% 
+  select(stationname, district, lat, long, elevation,
+         agest, nmsest, agclos, nmsclos, remarks) %>% 
+  mutate(latitude = as.numeric(substr(lat, 1,2)) +
+           as.numeric(substr(lat, 3,4))/60,
+         longitude = as.numeric(substr(long, 1, 2)) +
+           as.numeric(substr(long, 3, 4))/60) %>% 
+  select(-lat, -long)
+head(np.stations)
+```
+
+Check station locations on a map.
+
+```{r}
+pu <- paste("<b>Station name:</b>", as.character(np.stations$stationname), "<br>",
+            "<b>District:</b>", np.stations$district, "<br>",
+            "<b>Elevation:</b>", np.stations$elevation, "<br>",
+            "<b>agest:</b>", np.stations$agest, "<br>",
+            "<b>agclos:</b>", np.stations$agclos, "<br>",
+            "<b>nmsest:</b>", np.stations$nmsest, "<br>",
+            "<b>nmsclos:</b>", np.stations$nmsclos, "<br>",
+            "<b>remarks:</b>", np.stations$remarks, "<br>")
+#provider = "CartoDB.Positron"
+lmap <- leaflet(np.stations) %>% 
+  addTiles() %>% 
+  addMarkers(popup = pu)
+lmap
+```
