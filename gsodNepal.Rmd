@@ -121,3 +121,43 @@ lmap <- leaflet(np.stations) %>%
   addMarkers(popup = pu)
 lmap
 ```
+
+Official monsoon dates for Nepal.
+
+```{r}
+dhm.file <- "D:/github/climate-nepal/data/MonsoonOnsetOfficial.csv"
+dhm.monsoon <- read.csv(dhm.file, header = TRUE, colClasses = c("numeric", "character",
+                                         "character", "numeric",
+                                         "numeric", "numeric"),
+                        fileEncoding="UTF-8-BOM")
+dhm.monsoon <- dhm.monsoon %>% 
+  select(year, month, day, monthend, dayend) %>% 
+  mutate(monsoon = as.Date(paste(year, month, day,
+                                 sep = "-"), "%Y-%m-%d"),
+         doy = format(monsoon, "%j")) %>% 
+  select(year, monsoon, doy)
+# sd.onset <- sd(as.numeric(dhm.monsoon$doy))
+# head(dhm.monsoon)
+# ggthemr('greyscale')
+p.dhm <- qplot(as.numeric(year),
+               as.Date(doy, format="%j",
+                       origin="1.1.2013"),
+               data=dhm.monsoon,
+               geom=c("line"), #method="lm",
+               size=I(1),
+               alpha=I(.9),
+               main= expression(atop("Official monsoon onset day - Nepal (1968-2018)",
+                                     "Source: DHM")),
+               xlab="Year", 
+               ylab="Monsoon onset day")
+p.dhm <- p.dhm + stat_smooth(method="lm")
+p.dhm <- p.dhm + geom_point()
+p.dhm <- p.dhm +
+  geom_hline(yintercept = as.numeric(as.Date("162", format="%j",
+                       origin="1.1.2013")), size=1,
+             colour="firebrick", linetype=2) + 
+  scale_x_continuous(breaks=seq(1970, 2020, 5))
+p.dhm + #theme_hc() +
+  theme(legend.position="none")
+```
+
