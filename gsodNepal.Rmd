@@ -126,7 +126,8 @@ Official monsoon dates for Nepal.
 
 ```{r}
 dhm.file <- "D:/github/climate-nepal/data/MonsoonOnsetOfficial.csv"
-dhm.monsoon <- read.csv(dhm.file, header = TRUE, colClasses = c("numeric", "character",
+dhm.monsoon <- read.csv(dhm.file, header = TRUE,
+                        colClasses = c("numeric", "character",
                                          "character", "numeric",
                                          "numeric", "numeric"),
                         fileEncoding="UTF-8-BOM")
@@ -134,8 +135,12 @@ dhm.monsoon <- dhm.monsoon %>%
   select(year, month, day, monthend, dayend) %>% 
   mutate(monsoon = as.Date(paste(year, month, day,
                                  sep = "-"), "%Y-%m-%d"),
-         doy = format(monsoon, "%j")) %>% 
-  select(year, monsoon, doy)
+         doy = format(monsoon, "%j"),
+         monsoonend = as.Date(paste(year, monthend, dayend,
+                                    sep = "-"), "%Y-%m-%d"),
+         doyend = format(monsoonend,  "%j")) %>% 
+  select(year, monsoon, doy, monsoonend, doyend)
+head(dhm.monsoon)
 # sd.onset <- sd(as.numeric(dhm.monsoon$doy))
 # head(dhm.monsoon)
 # ggthemr('greyscale')
@@ -150,7 +155,9 @@ p.dhm <- qplot(as.numeric(year),
                                      "Source: DHM")),
                xlab="Year", 
                ylab="Monsoon onset day")
-p.dhm <- p.dhm + stat_smooth(method="lm")
+# p.dhm <- p.dhm + stat_smooth(method="lm")
+p.dhm <- p.dhm + geom_line(aes(year, as.Date(doyend, format="%j",
+                       origin="1.1.2013")))
 p.dhm <- p.dhm + geom_point()
 p.dhm <- p.dhm +
   geom_hline(yintercept = as.numeric(as.Date("162", format="%j",
